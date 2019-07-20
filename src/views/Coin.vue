@@ -10,6 +10,7 @@
                 :pagination.sync="pagination"
             >
 
+            <p>Webhooks added to discord</p>
             
 
             <template v-slot:items="props">
