@@ -14,19 +14,19 @@
             >
 
             <template v-slot:items="props">
-                    <td class="text-xs-left">{{ props.item.rank }}</td>
-                    <td class="text-xs-left">
-                        <v-avatar size="36px" class="mr-3">
-                            <img :src="`https://static.coincap.io/assets/icons/${ props.item.symbol.toLowerCase() }@2x.png`" alt>
-                        </v-avatar>
-                        {{ props.item.name }}
-                    </td>
-                    <td class="text-xs-right">${{ commarize(props.item.priceUsd) }}</td>
-                    <td class="text-xs-right">${{ commarize(props.item.marketCapUsd) }}</td>
-                    <td class="text-xs-right">${{ commarize(props.item.vwap24Hr) }}</td>
-                    <td class="text-xs-right">{{ commarize(props.item.supply) }}</td>
-                    <td class="text-xs-right">${{ commarize(props.item.volumeUsd24Hr) }}</td>
-                    <td :class="{'text-xs-right red--text' : props.item.changePercent24Hr < 0 , 'text-xs-right green--text' : props.item.changePercent24Hr > 0}">{{ commarize(props.item.changePercent24Hr) }}%</td>
+                <td class="text-xs-left">{{ props.item.rank }}</td>
+                <td class="text-xs-left">
+                    <v-avatar size="36px" class="mr-3">
+                        <img :src="`https://static.coincap.io/assets/icons/${ props.item.symbol.toLowerCase() }@2x.png`" alt>
+                    </v-avatar>
+                    <router-link exact :to="`coin/${ props.item.id }`">{{ props.item.name }}</router-link>
+                </td>
+                <td class="text-xs-right">${{ commarize(props.item.priceUsd) }}</td>
+                <td class="text-xs-right">${{ commarize(props.item.marketCapUsd) }}</td>
+                <td class="text-xs-right">${{ commarize(props.item.vwap24Hr) }}</td>
+                <td class="text-xs-right">{{ commarize(props.item.supply) }}</td>
+                <td class="text-xs-right">${{ commarize(props.item.volumeUsd24Hr) }}</td>
+                <td :class="{'text-xs-right red--text' : props.item.changePercent24Hr < 0 , 'text-xs-right green--text' : props.item.changePercent24Hr > 0}">{{ commarize(props.item.changePercent24Hr) }}%</td>
             </template>
         </v-data-table>
         </template>
@@ -54,7 +54,8 @@ export default {
             },
             coins: [],
             value: 0,
-            search: ''
+            search: '',
+            link: ''
         }
     },
     methods: {
