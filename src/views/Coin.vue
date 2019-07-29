@@ -71,7 +71,7 @@ export default {
             this.value = parseFloat(strValue);
             // Alter numbers larger than 1k
             if (this.value >= 1e3) {
-            var units = ["k", "M", "B", "T"];
+            var units = ["k", "m", "b", "t"];
             
             // Divide to get SI Unit engineering style numbers (1e3,1e6,1e9, etc)
             let unit = Math.floor(((this.value).toFixed(0).length - 1) / 3) * 3
