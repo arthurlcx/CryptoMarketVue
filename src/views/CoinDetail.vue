@@ -28,11 +28,20 @@
                 <p class="headline">{{ commarize(coinDetail.supply) }} {{ coinDetail.symbol }}</p>
             </v-flex>
         </v-layout>
+
+        <v-layout class="my-3">
+            <Chart></Chart>
+        </v-layout>
     </v-container>
 </template>
 
 <script>
+import Chart from '../components/Chart.vue'
+
 export default {
+    components: {
+        Chart
+    },
     data(){
         return{
             id: this.$route.params.id,
