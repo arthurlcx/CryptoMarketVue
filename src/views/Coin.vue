@@ -11,6 +11,7 @@
                 class="elevation-1"
                 :pagination.sync="pagination"
                 :search="search"
+                :loading="loading"
             >
 
             <template v-slot:items="props">
@@ -55,7 +56,8 @@ export default {
             coins: [],
             value: 0,
             search: '',
-            link: ''
+            link: '',
+            loading: true
         }
     },
     methods: {
@@ -87,9 +89,10 @@ export default {
             return this.value.toLocaleString()
         }
     },
-    created() {
+    mounted() {
         this.$http.get('https://api.coincap.io/v2/assets').then(function(data) {
             this.coins = data.body.data;
+            this.loading = false;
         })
     }
 }

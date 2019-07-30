@@ -2,28 +2,27 @@
     <nav>
         <v-toolbar app>
             <v-toolbar-side-icon class="grey--text" @click="drawer = !drawer"></v-toolbar-side-icon>
-            <v-toolbar-title>
-                <span class="font-weight-light">Crypto</span>
-                <span class="text-uppercase grey--text">Market</span>
+            <v-toolbar-title class="mt-2">
+                <v-avatar tile>
+                    <img src="../assets/logo-white.png" alt="">
+                </v-avatar>
+                <span class="display-1 font-weight-light">Crypto</span>
+                <span class="display-1 text-uppercase primary--text">Market</span>
             </v-toolbar-title>
+
+            <v-toolbar-items class="mx-4">
+                <v-btn flat round v-for="link in links" :key="link.text" router :to="link.route" class="text-none">
+                    {{ link.text }}
+                </v-btn>
+            </v-toolbar-items>
 
             <v-spacer></v-spacer>
 
-            <v-menu offset-y>
-                <v-btn flat slot="activator" color="grey">
-                    <v-icon left>expand_more</v-icon>
-                    <span>Menu</span>
-                </v-btn>
-                <v-list>
-                    <v-list-tile v-for="link in links" :key="link.text" router :to="link.route">
-                        <v-list-tile-title>{{ link.text }}</v-list-tile-title>
-                    </v-list-tile>
-                </v-list>
-            </v-menu>
-
-            <v-btn flat color="grey">
-                <span>Sign Out</span>
-                <v-icon right>exit_to_app</v-icon>
+            <v-btn outline round color="primary">
+                <span class="white--text px-3">Log In</span>
+            </v-btn>
+            <v-btn color="primary">
+                <span class="white--text">Join For Free</span>
             </v-btn>
         </v-toolbar>
 
@@ -56,7 +55,6 @@ export default {
         return{
             links: [
                 {icon: 'toll', text: 'Coin', route:'/'},
-                {icon: 'compare_arrows', text: 'Exchanges', route:'/exchanges'},
                 {icon: 'euro_symbol', text: 'Wallet', route:'/wallet'},
                 {icon: 'store', text: 'Marketplace', route:'/marketplace'},
             ],

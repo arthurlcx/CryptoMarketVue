@@ -30,23 +30,30 @@
         </v-layout>
 
         <v-layout class="my-3">
-            <Chart></Chart>
+            <line-chart :chart-data="priceUsd" :chart-labels="time"/>
         </v-layout>
     </v-container>
 </template>
 
 <script>
-import Chart from '../components/Chart.vue'
+import LineChart from '../components/Chart.vue'
 
 export default {
     components: {
-        Chart
+        LineChart
     },
     data(){
         return{
             id: this.$route.params.id,
             coinDetail: [],
-            value : 0
+            value : 0,
+            priceUsd: [],
+            time: [],
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            },
+            interval: 'd1'
         }
     },
     methods: {
@@ -73,7 +80,13 @@ export default {
     created() {
         this.$http.get('https://api.coincap.io/v2/assets/' + this.id).then(function(data) {
             this.coinDetail = data.body.data;
-        })
+        });
+
+        this.$http.get('https://api.coincap.io/v2/assets/' + this.id + '/history?interval=' + this.interval).then(function(data) {
+            this.priceUsd = data.body.data.map(entry => entry.priceUsd);
+            this.time = data.body.data.map(entry => entry.time);
+            console.log(data);
+        });
     }
 
 }

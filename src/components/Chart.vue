@@ -1,29 +1,60 @@
-<template>
-    <p>chart</p>
-</template>
-
 <script>
+import { Line } from 'vue-chartjs'
+
 export default {
+    extends: Line,
+    props: {
+        chartData: {
+            type: Array | Object,
+            default: null,
+            required: true
+        },
+        chartLabels: {
+            type: Array,
+            required: true
+        },
+        options: {
+            type: Object,
+            default: null
+        }
+    },
     data() {
         return{
-            id: this.$route.params.id,
-            coinHistory: [],
-            interval: 'd1'
+            
         }
     },
-    methods: {
-        httpGet: function(){
-            this.$http.get('api.coincap.io/v2/assets/' + this.id + 'bitcoin/history?interval=' + this.interval).then(function(data) {
-            this.coinDetail = data.body.data;
-            console.log(data);
-        })
-        }
-    },
-    created() {
-        this.httpGet;
+    mounted() {
+        this.gradient = this.$refs.canvas
+            .getContext('2d')
+            .createLinearGradient(0, 0, 0, 450)
+        this.gradient.addColorStop(0, 'rgba(52, 217, 221, 0.6)')
+        this.gradient.addColorStop(0.5, 'rgba(52, 217, 221, 0.25)')
+        this.gradient.addColorStop(1, 'rgba(52, 217, 221, 0)')
+
+        this.renderChart({
+        labels: this.chartLabels,
+        datasets: [
+          {
+            label: 'priceUsd',
+            borderColor: '#249EBF',
+            pointBackgroundColor: 'rgba(0,0,0,0)',
+            pointBorderColor: 'rgba(0,0,0,0)',
+            pointHoverBorderColor: '#249EBF',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverRadius: 4,
+            pointHitRadius: 10,
+            pointHoverBorderWidth: 1,
+            borderWidth: 1,
+            backgroundColor: this.gradient,
+            data: this.chartData
+          }
+        ]
+      }, this.options)
+
     }
 }
 </script>
+
 
 <style>
 
