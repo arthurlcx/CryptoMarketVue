@@ -30,7 +30,7 @@
         </v-layout>
 
         <v-layout class="my-3">
-            <line-chart :chart-data="priceUsd" :chart-labels="time"/>
+            <line-chart :chart-data="priceUsd" :chart-labels="time" :options="options"/>
         </v-layout>
     </v-container>
 </template>
@@ -85,8 +85,8 @@ export default {
         this.$http.get('https://api.coincap.io/v2/assets/' + this.id + '/history?interval=' + this.interval).then(function(data) {
             this.priceUsd = data.body.data.map(entry => entry.priceUsd);
             this.time = data.body.data.map(entry => entry.time);
-            console.log(data);
         });
+
     }
 
 }

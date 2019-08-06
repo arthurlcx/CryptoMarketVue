@@ -3,7 +3,7 @@
         <v-toolbar app>
             <v-toolbar-side-icon class="grey--text" @click="drawer = !drawer"></v-toolbar-side-icon>
             <v-toolbar-title class="mt-2">
-                <v-avatar tile>
+                <v-avatar tile class="mr-2">
                     <img src="../assets/logo-white.png" alt="">
                 </v-avatar>
                 <span class="display-1 font-weight-light">Crypto</span>
@@ -18,12 +18,13 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn outline round color="primary">
+            <v-btn outline round color="primary" router to="/login">
                 <span class="white--text px-3">Log In</span>
             </v-btn>
-            <v-btn color="primary">
+            <v-btn color="primary" router to="/Login">
                 <span class="white--text">Join For Free</span>
             </v-btn>
+            
         </v-toolbar>
 
         <v-navigation-drawer v-model="drawer" app class="primary">
@@ -50,6 +51,7 @@
 </template>
 
 <script>
+
 export default {
     data (){
         return{
@@ -58,7 +60,7 @@ export default {
                 {icon: 'euro_symbol', text: 'Wallet', route:'/wallet'},
                 {icon: 'store', text: 'Marketplace', route:'/marketplace'},
             ],
-            drawer: false,
+            drawer: false
         }
     }
 }
