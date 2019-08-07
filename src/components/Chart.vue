@@ -5,7 +5,7 @@ export default {
     extends: Line,
     props: {
         chartData: {
-            type: Array | Object,
+            type: Array,
             default: null,
             required: true
         },
@@ -35,7 +35,7 @@ export default {
         labels: this.chartLabels,
         datasets: [
           {
-            label: 'priceUsd',
+            label: 'Price in USD',
             borderColor: '#249EBF',
             pointBackgroundColor: 'rgba(0,0,0,0)',
             pointBorderColor: 'rgba(0,0,0,0)',

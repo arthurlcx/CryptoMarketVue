@@ -30,8 +30,27 @@
         </v-layout>
 
         <v-layout class="my-3">
-            <line-chart :chart-data="priceUsd" :chart-labels="time" :options="options"/>
+            <v-flex xs12 md6 class="pr-3">
+                <v-btn block round color="success">buy</v-btn>
+            </v-flex>
+            <v-flex xs12 md6 class="pl-3">
+                <v-btn block round color="warning">sell</v-btn>
+            </v-flex>
         </v-layout>
+
+        <v-layout class="mt-5" >
+            <v-flex grow>
+                <line-chart v-if="loaded" :chart-data="priceUsd" :chart-labels="time" :options="options"/>
+            </v-flex>
+        </v-layout>
+
+        <v-layout>
+            <v-flex grow>
+                <v-btn round color="primary" v-for="intervalMod in intervalMods" :key="intervalMod.value" @click="requestHistoryData(intervalMod.value)">{{ intervalMod.text }}</v-btn>
+            </v-flex>
+        </v-layout>
+
+        
     </v-container>
 </template>
 
@@ -39,9 +58,7 @@
 import LineChart from '../components/Chart.vue'
 
 export default {
-    components: {
-        LineChart
-    },
+    components: { LineChart },
     data(){
         return{
             id: this.$route.params.id,
@@ -53,7 +70,16 @@ export default {
                 responsive: true,
                 maintainAspectRatio: false
             },
-            interval: 'd1'
+            intervalMods: [
+                {text: '1 Day', value: 'm1'},
+                {text: '5 Days', value: 'm5'},
+                {text: '1 Month', value: 'h1'},
+                {text: '6 Moths', value: 'h6'},
+                {text: '1 Year', value: 'h12'},
+                {text: 'ALL', value: 'd1'},
+            ],
+            loading: false,
+            loaded: false,
         }
     },
     methods: {
@@ -75,18 +101,38 @@ export default {
             
             // return formatted original number
             return this.value.toLocaleString()
+        },
+        resetState () {
+            this.loaded = false
+        },
+        requestHistoryData (interval) {
+            this.resetState()
+            this.loading = true
+            try {
+            this.$http.get('https://api.coincap.io/v2/assets/' + this.id + '/history?interval=' + interval).then((data) => {
+                this.priceUsd = data.body.data.map(entry => entry.priceUsd)
+                this.time = data.body.data.map(entry => this.convertEpoch(entry.time))
+                this.loaded = true
+                this.loading = false
+            });
+            } catch (e) {
+                console.error(e)
+            }
+        },
+        convertEpoch (time) {
+            var date = new Date(time)
+
+            return date.toLocaleString()
         }
     },
     created() {
-        this.$http.get('https://api.coincap.io/v2/assets/' + this.id).then(function(data) {
+        this.$http.get('https://api.coincap.io/v2/assets/' + this.id).then((data) => {
             this.coinDetail = data.body.data;
         });
 
-        this.$http.get('https://api.coincap.io/v2/assets/' + this.id + '/history?interval=' + this.interval).then(function(data) {
-            this.priceUsd = data.body.data.map(entry => entry.priceUsd);
-            this.time = data.body.data.map(entry => entry.time);
-        });
-
+    },
+    mounted () {
+        this.requestHistoryData('m1');
     }
 
 }

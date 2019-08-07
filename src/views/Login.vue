@@ -73,7 +73,8 @@ export default {
             emailReg: '',
             passwordReg: '',
             passwordRegCom: '',
-            showReg: false
+            showReg: false,
+            displayName: ''
         }
     },
     methods: {
@@ -81,9 +82,8 @@ export default {
             if (this.$refs.formReg.validate()){
                 this.loading = true
                 firebase.auth().createUserWithEmailAndPassword(this.emailReg, this.passwordReg).then(
-                    (user) => {
-                        alert('Register successfully')
-                        this.$router.replace('/')
+                    () => {
+                        this.updateUserProfile()
                     },
                     function(error) {
                         // Handle Errors here.
@@ -94,12 +94,24 @@ export default {
                 alert('Invalid entries. Please check again.')
             }
         },
+        updateUserProfile: function() {
+            var user = firebase.auth().currentUser;
+
+            user.updateProfile({
+                displayName: this.firstName
+            }).then(() => {
+                this.loading = false
+                this.$router.replace('/')
+            }).catch(function(error) {
+                alert(error.message)
+            })
+        },
         logIn: function() {
             if (this.$refs.form.validate()){
                 firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(
-                    (user) => {
-                        alert('Logged in!');
-                        this.$router.replace('/')
+                    () => {
+                        this.loading = false
+                        this.$router.replace('/');
                     },
                     function(error) {
                         //Handle Errors here
