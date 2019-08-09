@@ -41,7 +41,7 @@ export default {
             headers: [
                 { text: 'Rank',align: 'left',value: 'rank'},
                 { text: 'Name', value: 'name', align: 'left'},
-                { text: 'Price', value: 'price', align: 'right'},
+                { text: 'Price', value: 'priceUsd', align: 'right'},
                 { text: 'Market Cap', value: 'marketCapUsd', align: 'right'},
                 { text: 'VWAP(24Hr)', value: 'vwap24Hr', align: 'right'},
                 { text: 'Supply', value: 'supply', align: 'right'},
@@ -61,14 +61,6 @@ export default {
         }
     },
     methods: {
-        changeSort (column) {
-            if (this.pagination.sortBy === column) {
-            this.pagination.descending = !this.pagination.descending
-            } else {
-            this.pagination.sortBy = column
-            this.pagination.descending = false
-            }
-        },
         commarize(strValue) {
             this.value = parseFloat(strValue);
             // Alter numbers larger than 1k

@@ -29,15 +29,6 @@
             </v-flex>
         </v-layout>
 
-        <v-layout class="my-3">
-            <v-flex xs12 md6 class="pr-3">
-                <v-btn block round color="success">buy</v-btn>
-            </v-flex>
-            <v-flex xs12 md6 class="pl-3">
-                <v-btn block round color="warning">sell</v-btn>
-            </v-flex>
-        </v-layout>
-
         <v-layout class="mt-5" >
             <v-flex grow>
                 <line-chart v-if="loaded" :chart-data="priceUsd" :chart-labels="time" :options="options"/>
@@ -50,15 +41,43 @@
             </v-flex>
         </v-layout>
 
+        <template>
+            <v-data-table
+                v-if="loadedTable"
+                :headers="headers"
+                :items="market"
+                class="elevation-5 mt-5"
+                :loading="loadingTable"
+                :pagination.sync="pagination"
+                >
+
+                <template v-slot:items="props">
+                    <td class="text-xs-left">
+                    {{ props.item.exchangeId }}
+                    </td>
+                    <td class="text-xs-right">{{ props.item.baseSymbol }}/{{ props.item.quoteSymbol }}</td>
+                    <td class="text-xs-right">${{ commarize(props.item.priceUsd) }}</td>
+                    <td class="text-xs-right">${{ commarize(props.item.volumeUsd24Hr) }}</td>
+                    <td class="text-xs-right">${{ commarize(props.item.volumePercent) }} %</td>
+                </template>
+            </v-data-table>
+        </template>
+
+        <PopupBuy :coinDetail="coinDetail"></PopupBuy>
+
         
     </v-container>
 </template>
 
 <script>
 import LineChart from '../components/Chart.vue'
+import PopupBuy from '../components/PopupBuy.vue'
 
 export default {
-    components: { LineChart },
+    components: { 
+        LineChart,
+        PopupBuy
+    },
     data(){
         return{
             id: this.$route.params.id,
@@ -80,6 +99,22 @@ export default {
             ],
             loading: false,
             loaded: false,
+            market: [],
+            headers: [
+                { text: 'Exchange',value: 'exchangeId', align: 'left'},
+                { text: 'Pair', value: 'baseSymbol', align: 'right'},
+                { text: 'Price', value: 'priceUsd', align: 'right'},
+                { text: 'Volume (24Hr)', value: 'volumeUsd24Hr', align: 'right'},
+                { text: 'Volume (%)', value: 'volumePercent', align: 'right'}
+            ],
+            loadingTable: false,
+            loadedTable: false,
+            pagination:
+            {
+                rowsPerPage: -1,
+                sortBy: 'volumeUsd24Hr',
+                descending: true
+            }
         }
     },
     methods: {
@@ -116,13 +151,23 @@ export default {
                 this.loading = false
             });
             } catch (e) {
-                console.error(e)
+                alert(e.message);
             }
         },
         convertEpoch (time) {
             var date = new Date(time)
 
             return date.toLocaleString()
+        },
+        requestMarket() {
+            this.loadingTable = true
+            this.loadedTable = false
+
+            this.$http.get('https://api.coincap.io/v2/assets/' + this.id + '/markets').then((data) => {
+                this.loadingTable = false
+                this.loadedTable = true
+                this.market = data.body.data;
+            });
         }
     },
     created() {
@@ -132,7 +177,8 @@ export default {
 
     },
     mounted () {
-        this.requestHistoryData('m1');
+        this.requestHistoryData('m1')
+        this.requestMarket()
     }
 
 }
