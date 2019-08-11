@@ -65,7 +65,6 @@
 
         <PopupBuy :coinDetail="coinDetail"></PopupBuy>
 
-        
     </v-container>
 </template>
 

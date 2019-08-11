@@ -83,12 +83,12 @@ export default {
         return{
             links: [
                 {icon: 'toll', text: 'Coin', route:'/'},
-                {icon: 'euro_symbol', text: 'Portfolio', route:'/portfolio'},
-                {icon: 'store', text: 'Marketplace', route:'/marketplace'},
+                {icon: 'assessment', text: 'Portfolio', route:'/portfolio'},
+                {icon: 'speaker_notes', text: 'Marketplace', route:'/'}
             ],
             userLinks: [
-                {text: 'My Portfolio', route:'/portfolio'},
-                {text: 'My Account', route:'/user'}
+                {text: 'My Account', route:'/user'},
+                {text: 'My Portfolio', route:'/portfolio'}
             ],
             drawer: false,
             snackbar: false,

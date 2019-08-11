@@ -1,5 +1,5 @@
 <template>
-    <v-dialog max-width="650" transition="dialog-bottom-transition" v-model="dialog">
+    <v-dialog max-width="700" transition="dialog-bottom-transition" v-model="dialog">
         <v-btn  large fab fixed right bottom slot="activator" class="success mx-5 mb-3 elevation-5">
             <v-icon>attach_money</v-icon>
         </v-btn>
@@ -32,10 +32,10 @@
                             <v-text-field class="my-3 d-inline-block" outline v-model="coinPrice" @change="updateUnit"></v-text-field>
                             <span class="subtitle-1 ml-2">USD</span>
                             <v-icon class="mx-3">swap_horiz</v-icon>
-                            <v-text-field class="my-3 d-inline-block" outline v-model="coinUnit" @change="updatePrice"></v-text-field>
+                            <v-text-field class="my-3 d-inline-block" outline v-model="coinUnit" type="number" @change="updatePrice"></v-text-field>
                             <span class="subtitle-1 mx-2">{{ coinDetail.symbol }}</span>
 
-                            <v-btn block color="primary">Buy {{ coinDetail.name }} - $ {{ (this.coinPrice).toFixed(2) }}</v-btn>
+                            <v-btn block color="primary" @click="buyCoin">Buy {{ coinDetail.name }} - $ {{ this.coinPrice }}</v-btn>
                         </v-flex>
                     </v-layout>
                 </v-container>
@@ -45,6 +45,9 @@
 </template>
 
 <script>
+import db from '../firebase'
+import firebase from 'firebase'
+
 export default {
     props: {
         coinDetail: {
@@ -59,15 +62,46 @@ export default {
             paymentMethod: ['Credit/Debit Card', 'JomPay', 'PayPal'],
             coinUnit: 0,
             coinPrice: 0,
+            userUid: null
         }
     },
     methods: {
         updatePrice() {
-            this.coinPrice = this.coinUnit * this.coinDetail.priceUsd
+            this.coinPrice = this.roundOff(this.coinUnit * this.coinDetail.priceUsd)
         },
         updateUnit() {
             this.coinUnit = this.coinPrice / this.coinDetail.priceUsd
-        }
+        },
+        roundOff(price) {
+            return (price).toFixed(2)
+        },
+        buyCoin() {
+            var date = new Date()
+
+            const portfolio = {
+                coinName: this.coinDetail.name,
+                coinId: this.coinDetail.id,
+                coinSymbol: this.coinDetail.symbol,
+                unitPrice: this.coinDetail.priceUsd,
+                coinPrice: this.coinPrice,
+                coinUnit: this.coinUnit,
+                time: date.toLocaleString(),
+                uid: this.userUid
+            }
+
+            db.collection('portfolio').add(portfolio).then(() => {
+                this.dialog = false
+            })
+        },
+    },
+    mounted() {
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                this.userUid = user.uid
+            } else {
+                // No user is signed in.
+            }
+        });
     }
 }
 </script>
