@@ -24,7 +24,6 @@
 <script>
 import db from '../firebase'
 import firebase from 'firebase'
-import { VExpansionPanel, VExpansionPanelContent } from 'vuetify'
 
 export default {
     data() {
@@ -43,9 +42,6 @@ export default {
                     this.portfolio.push(doc.data())
                 });
             })
-            .catch(function(error) {
-                console.log("Error getting documents: ", error);
-            });
         },
         convertLowerCase(string) {
             return string.toLowerCase()
@@ -58,11 +54,7 @@ export default {
                 this.id = user.uid
                 this.readData()
             }
-            if (user != null){
-
-            } else {
-                // No user is signed in.
-            }
+            
         });
         
 
